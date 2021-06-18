@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace EateryDuwamish
 {
-    public partial class Dish : System.Web.UI.Page
+    public partial class Recipes : System.Web.UI.Page
     {
         protected const string DEFAULT_DDL_VALUE = "0";
         protected void Page_Load(object sender, EventArgs e)
@@ -131,7 +131,7 @@ namespace EateryDuwamish
                 Session["save-success"] = 1;
                 Response.Redirect("Dish.aspx");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 notifDish.Show($"ERROR SAVE DATA: {ex.Message}", NotificationType.Danger);
             }
@@ -177,6 +177,5 @@ namespace EateryDuwamish
             }
         }
         #endregion
-
     }
 }

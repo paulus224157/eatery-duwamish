@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Dish" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Dish.aspx.cs" Inherits="EateryDuwamish.Dish" %>
+﻿<%@ Page Title="Dish" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Recipes.aspx.cs" Inherits="EateryDuwamish.Recipes" %>
 <%@ Register Src="~/UserControl/NotificationControl.ascx" TagName="NotificationControl" TagPrefix="uc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="Head" runat="server">
     <%--Datatable Configuration--%>
@@ -64,7 +64,7 @@
                 });
             </script>
             <uc1:NotificationControl ID="notifDish" runat="server" />
-            <div class="page-title">Dishes</div><hr style="margin:0"/>
+            <div class="page-title">RECIPES</div><hr style="margin:0"/>
             <%--FORM DISH--%>
             <asp:Panel runat="server" ID="pnlFormDish" Visible="false">
                 <div class="form-slip">
@@ -152,7 +152,7 @@
             <div class="row">
                 <div class="table-header">
                     <div class="table-header-title">
-                        View, manage, and choose your desired dish here.
+                        DISHES
                     </div>
                     <div class="table-header-button">
                         <asp:Button ID="btnAdd" runat="server" Text="ADD" CssClass="btn btn-primary" Width="100px"
