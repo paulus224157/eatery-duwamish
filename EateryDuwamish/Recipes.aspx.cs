@@ -12,109 +12,94 @@ namespace EateryDuwamish
 {
     public partial class Recipes : System.Web.UI.Page
     {
-        protected const string DEFAULT_DDL_VALUE = "0";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int dishID = Convert.ToInt32(Request.QueryString["id"]);
             if (!IsPostBack)
             {
                 ShowNotificationIfExists();
-                LoadDishTable();
-                LoadDishTypeDropdown();
+                LoadRecipeTable(dishID);
             }
         }
+
         #region FORM MANAGEMENT
-        private void FillForm(DishData dish)
+        private void FillForm(RecipeData recipe)
         {
-            hdfDishId.Value = dish.DishID.ToString();
-            ddlDishType.SelectedValue = dish.DishTypeID.ToString();
-            txtDishName.Text = dish.DishName;
-            txtPrice.Text = dish.DishPrice.ToString();
+            hdfRecipeId.Value = recipe.RecipeID.ToString();
+            txtRecipeName.Text = recipe.RecipeName;
         }
         private void ResetForm()
         {
-            hdfDishId.Value = String.Empty;
-            txtDishName.Text = String.Empty;
-            ddlDishType.SelectedValue = DEFAULT_DDL_VALUE;
-            txtPrice.Text = String.Empty;
+            hdfRecipeId.Value = String.Empty;
+            txtRecipeName.Text = String.Empty;
         }
-        private DishData GetFormData()
+        private RecipeData GetFormData()
         {
-            DishData dish = new DishData();
-            dish.DishID = String.IsNullOrEmpty(hdfDishId.Value) ? 0 : Convert.ToInt32(hdfDishId.Value);
-            dish.DishTypeID = Convert.ToInt32(ddlDishType.SelectedValue);
-            dish.DishName = txtDishName.Text;
-            dish.DishPrice = Convert.ToInt32(txtPrice.Text);
-            return dish;
-        }
-        private void LoadDishTypeDropdown()
-        {
-            List<DishTypeData> ListDishType = new DishTypeSystem().GetDishTypeList();
-            ddlDishType.DataSource = ListDishType;
-            ddlDishType.DataValueField = "DishTypeID";
-            ddlDishType.DataTextField = "DishTypeName";
-            ddlDishType.DataBind();
-            ddlDishType.Items.Insert(0, new ListItem("-- Choose Dish Type --", DEFAULT_DDL_VALUE));
-            ddlDishType.SelectedValue = DEFAULT_DDL_VALUE;
+            RecipeData recipe = new RecipeData();
+            recipe.RecipeID = String.IsNullOrEmpty(hdfRecipeId.Value) ? 0 : Convert.ToInt32(hdfRecipeId.Value);
+            recipe.RecipeName = txtRecipeName.Text;
+            int dishID = Convert.ToInt32(Request.QueryString["id"]);
+            recipe.DishID = dishID;
+            return recipe;
         }
         #endregion
 
         #region DATA TABLE MANAGEMENT
-        private void LoadDishTable()
+        private void LoadRecipeTable(int dishID)
         {
             try
             {
-                List<DishData> ListDish = new DishSystem().GetDishList();
-                rptDish.DataSource = ListDish;
-                rptDish.DataBind();
+                DishData DishDetail = new DishSystem().GetDishByID(dishID);
+                litTableHeaderTitle.Text = $"{DishDetail.DishName}";
+
+                List<RecipeData> ListRecipe = new RecipeSystem().GetRecipeList(dishID);
+                rptRecipe.DataSource = ListRecipe;
+                rptRecipe.DataBind();
             }
             catch (Exception ex)
             {
-                notifDish.Show($"ERROR LOAD TABLE: {ex.Message}", NotificationType.Danger);
+                notifRecipe.Show($"ERROR LOAD TABLE: {ex.Message}", NotificationType.Danger);
             }
         }
-        protected void rptDish_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        protected void rptRecipe_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
-                DishData dish = (DishData)e.Item.DataItem;
-                Literal litDishName = (Literal)e.Item.FindControl("litDishName");
-                Literal litDishType = (Literal)e.Item.FindControl("litDishType");
-                Literal litPrice = (Literal)e.Item.FindControl("litPrice");
-                LinkButton lbEditDish = (LinkButton)e.Item.FindControl("lbEditDish");
+                RecipeData recipe = (RecipeData)e.Item.DataItem;
+                Literal litRecipeName = (Literal)e.Item.FindControl("litRecipeName");
+                LinkButton lbEditRecipe = (LinkButton)e.Item.FindControl("lbEditRecipe");
+                LinkButton lbRecipeDetail = (LinkButton)e.Item.FindControl("lbRecipeDetail");
 
-                litDishName.Text = dish.DishName;
-                //lbDishName.CommandArgument = dish.DishID.ToString();
-
-                DishTypeData DishType = new DishTypeSystem().GetDishTypeByID(dish.DishTypeID);
-                litDishType.Text = DishType.DishTypeName;
-                litPrice.Text = dish.DishPrice.ToString();
+                litRecipeName.Text = recipe.RecipeName;
 
                 CheckBox chkChoose = (CheckBox)e.Item.FindControl("chkChoose");
-                chkChoose.Attributes.Add("data-value", dish.DishID.ToString());
+                chkChoose.Attributes.Add("data-value", recipe.RecipeID.ToString());
 
-                lbEditDish.CommandArgument = dish.DishID.ToString();
+                lbEditRecipe.CommandArgument = recipe.RecipeID.ToString();
+                lbRecipeDetail.CommandArgument = recipe.RecipeID.ToString();
             }
         }
-        protected void rptDish_ItemCommand(object sender, RepeaterCommandEventArgs e)
+        protected void rptRecipe_ItemCommand(object sender, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "EDIT")
             {
-                Literal litDishName = (Literal)e.Item.FindControl("litDishName");
-                Literal litDishType = (Literal)e.Item.FindControl("litDishType");
-                Literal litPrice = (Literal)e.Item.FindControl("litPrice");
+                Literal litRecipeName = (Literal)e.Item.FindControl("litRecipeName");
 
-                int dishID = Convert.ToInt32(e.CommandArgument.ToString());
-                DishData dish = new DishSystem().GetDishByID(dishID);
-                FillForm(new DishData
+                int recipeID = Convert.ToInt32(e.CommandArgument.ToString());
+                RecipeData recipe = new RecipeSystem().GetRecipeByID(recipeID);
+                FillForm(new RecipeData
                 {
-                    DishID = dish.DishID,
-                    DishName = dish.DishName,
-                    DishTypeID = dish.DishTypeID,
-                    DishPrice = dish.DishPrice
+                    RecipeID = recipe.RecipeID,
+                    RecipeName = recipe.RecipeName
                 });
-                litFormType.Text = $"UBAH: {litDishName.Text}";
-                pnlFormDish.Visible = true;
-                txtDishName.Focus();
+                litFormType.Text = $"UBAH: {litRecipeName.Text}";
+                pnlFormRecipe.Visible = true;
+                txtRecipeName.Focus();
+            }
+            if (e.CommandName == "DETAIL")
+            {
+                var recipeID = e.CommandArgument.ToString();
+                Response.Redirect("Detail.aspx?id=" + recipeID);
             }
         }
         #endregion
@@ -124,40 +109,41 @@ namespace EateryDuwamish
         {
             try
             {
-                DishData dish = GetFormData();
-                int rowAffected = new DishSystem().InsertUpdateDish(dish);
+                RecipeData recipe = GetFormData();
+                int rowAffected = new RecipeSystem().InsertUpdateRecipe(recipe);
                 if (rowAffected <= 0)
                     throw new Exception("No Data Recorded");
                 Session["save-success"] = 1;
-                Response.Redirect("Dish.aspx");
+                Response.Redirect("Recipes.aspx?id=" + recipe.DishID.ToString());
             }
             catch (Exception ex)
             {
-                notifDish.Show($"ERROR SAVE DATA: {ex.Message}", NotificationType.Danger);
+                notifRecipe.Show($"ERROR SAVE DATA: {ex.Message}", NotificationType.Danger);
             }
         }
         protected void btnAdd_Click(object sender, EventArgs e)
         {
             ResetForm();
             litFormType.Text = "TAMBAH";
-            pnlFormDish.Visible = true;
-            txtDishName.Focus();
+            pnlFormRecipe.Visible = true;
+            txtRecipeName.Focus();
         }
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             try
             {
-                string strDeletedIDs = hdfDeletedDishes.Value;
+                string strDeletedIDs = hdfDeletedRecipes.Value;
+                int dishID = Convert.ToInt32(Request.QueryString["id"]);
                 IEnumerable<int> deletedIDs = strDeletedIDs.Split(',').Select(Int32.Parse);
-                int rowAffected = new DishSystem().DeleteDishes(deletedIDs);
+                int rowAffected = new RecipeSystem().DeleteRecipes(deletedIDs);
                 if (rowAffected <= 0)
                     throw new Exception("No Data Deleted");
                 Session["delete-success"] = 1;
-                Response.Redirect("Dish.aspx");
+                Response.Redirect("Recipes.aspx?id=" + dishID);
             }
             catch (Exception ex)
             {
-                notifDish.Show($"ERROR DELETE DATA: {ex.Message}", NotificationType.Danger);
+                notifRecipe.Show($"ERROR DELETE DATA: {ex.Message}", NotificationType.Danger);
             }
         }
         #endregion
@@ -167,12 +153,12 @@ namespace EateryDuwamish
         {
             if (Session["save-success"] != null)
             {
-                notifDish.Show("Data sukses disimpan", NotificationType.Success);
+                notifRecipe.Show("Data sukses disimpan", NotificationType.Success);
                 Session.Remove("save-success");
             }
             if (Session["delete-success"] != null)
             {
-                notifDish.Show("Data sukses dihapus", NotificationType.Success);
+                notifRecipe.Show("Data sukses dihapus", NotificationType.Success);
                 Session.Remove("delete-success");
             }
         }

@@ -81,6 +81,7 @@ namespace EateryDuwamish
                 Literal litDishType = (Literal)e.Item.FindControl("litDishType");
                 Literal litPrice = (Literal)e.Item.FindControl("litPrice");
                 LinkButton lbEditDish = (LinkButton)e.Item.FindControl("lbEditDish");
+                LinkButton lbDishRecipes = (LinkButton)e.Item.FindControl("lbDishRecipes");
 
                 litDishName.Text = dish.DishName;
                 //lbDishName.CommandArgument = dish.DishID.ToString();
@@ -93,6 +94,7 @@ namespace EateryDuwamish
                 chkChoose.Attributes.Add("data-value", dish.DishID.ToString());
 
                 lbEditDish.CommandArgument = dish.DishID.ToString();
+                lbDishRecipes.CommandArgument = dish.DishID.ToString();
             }
         }
         protected void rptDish_ItemCommand(object sender, RepeaterCommandEventArgs e)
@@ -115,6 +117,12 @@ namespace EateryDuwamish
                 litFormType.Text = $"UBAH: {litDishName.Text}";
                 pnlFormDish.Visible = true;
                 txtDishName.Focus();
+            }
+
+            if (e.CommandName == "RECIPES")
+            {
+                var dishID = e.CommandArgument.ToString();
+                Response.Redirect("Recipes.aspx?id=" + dishID);
             }
         }
         #endregion

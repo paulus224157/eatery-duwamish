@@ -218,7 +218,8 @@
                                 </td>
                                 <td>
                                     <div style="text-align: center;">
-                                        <asp:LinkButton ID="lbDishRecipes" runat="server">Recipes</asp:LinkButton>
+                                        <asp:LinkButton ID="lbDishRecipes" runat="server" CommandName="RECIPES">Recipes</asp:LinkButton>
+                                         &#9483; 
                                         <asp:LinkButton ID="lbEditDish" runat="server" CommandName="EDIT">Edit</asp:LinkButton>
                                     </div>
                                 </td>
