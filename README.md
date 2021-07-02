@@ -24,5 +24,5 @@ Laporan Eatery-Duwamish : Paulus - { 2440011141 }
 - Menyelesaikan secara keseluruhan proyek Eatery-Duwamish ini.
 
 ## CATATAN:
-1 Home.aspx tidak terpakai, prosedur jalannya web: Dish.aspx -> Recipes.aspx -> Detail.aspx
-2 Terdapat perubahan CSS, apabila tampilan sedikit aneh, harap hard refresh dengan Ctrl + F5.
+- Home.aspx tidak terpakai, prosedur jalannya web: Dish.aspx -> Recipes.aspx -> Detail.aspx
+- Terdapat perubahan CSS, apabila tampilan sedikit aneh, harap hard refresh dengan Ctrl + F5.
