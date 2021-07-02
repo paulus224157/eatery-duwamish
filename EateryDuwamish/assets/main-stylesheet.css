@@ -29,6 +29,20 @@ footer{
 .table-main{
 
 }
+.table-footer{
+    margin: 10px 15px 10px 15px;
+    margin-bottom: 75px;
+    overflow:hidden
+}
+textarea {
+    resize: none;
+}
+.textarea-description {
+    margin: 10px 15px 10px 15px;
+}
+.table-footer-button{
+    float:right;
+}
 .form-slip{
     margin: 15px 0;
     padding: 15px;
